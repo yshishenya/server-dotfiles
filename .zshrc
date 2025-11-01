@@ -495,6 +495,12 @@ TIPS=(
     "💡 Набери 'tips' чтобы увидеть случайную подсказку"
     "💡 Набери 'tips-all' чтобы увидеть все подсказки"
     "💡 Документация: cat ~/dotfiles/ZSH-FEATURES.md"
+    "💡 'vpn-on' включает VPN для доступа к Claude Code"
+    "💡 'vpn-off' выключает VPN и переключает на прямое подключение"
+    "💡 'vpn' или 'vpn-status' показывает статус VPN и текущий IP"
+    "💡 'vpn-test' тестирует VPN подключение (4 проверки)"
+    "💡 'novpn curl ...' выполнит команду БЕЗ VPN (временно)"
+    "💡 'vpn-logs' показывает последние логи VPN"
 )
 
 # Функция показа случайной подсказки
@@ -546,4 +552,231 @@ if (( TIP_COUNTER >= 5 )); then
 else
     echo "$TIP_COUNTER" > "$TIP_COUNTER_FILE"
 fi
+
+################################################################################
+# VPN УПРАВЛЕНИЕ (Xray vless client)
+################################################################################
+
+# Быстрое включение VPN сервиса + переменных окружения
+vpn-on() {
+    echo "🔄 Запуск VPN..."
+    sudo systemctl start xray
+
+    # Подождать секунду для запуска
+    sleep 1
+
+    if systemctl is-active --quiet xray; then
+        export http_proxy="http://127.0.0.1:1081"
+        export https_proxy="http://127.0.0.1:1081"
+        export all_proxy="socks5://127.0.0.1:1080"
+        export no_proxy="localhost,127.0.0.1,::1,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+
+        echo "✅ VPN включен"
+        echo ""
+        echo "🌍 Проверка внешнего IP..."
+        local external_ip=$(curl -s --max-time 5 https://api.ipify.org?format=json 2>/dev/null | grep -o '"ip":"[^"]*"' | cut -d'"' -f4)
+        if [[ -n "$external_ip" ]]; then
+            echo "📍 Текущий IP: $external_ip"
+        else
+            echo "⚠️  Не удалось получить внешний IP"
+        fi
+    else
+        echo "❌ Ошибка запуска VPN"
+        echo "Проверьте логи: journalctl -u xray -n 20"
+    fi
+}
+
+# Быстрое выключение VPN
+vpn-off() {
+    echo "🔄 Остановка VPN..."
+    sudo systemctl stop xray
+
+    unset http_proxy https_proxy all_proxy no_proxy
+    unset HTTP_PROXY HTTPS_PROXY ALL_PROXY NO_PROXY
+
+    echo "❌ VPN выключен"
+    echo ""
+    echo "🌍 Проверка внешнего IP..."
+    local external_ip=$(curl -s --max-time 5 https://api.ipify.org?format=json 2>/dev/null | grep -o '"ip":"[^"]*"' | cut -d'"' -f4)
+    if [[ -n "$external_ip" ]]; then
+        echo "📍 Текущий IP: $external_ip"
+    else
+        echo "⚠️  Не удалось получить внешний IP"
+    fi
+}
+
+# Перезапуск VPN
+vpn-restart() {
+    echo "🔄 Перезапуск VPN..."
+    sudo systemctl restart xray
+    sleep 1
+
+    if systemctl is-active --quiet xray; then
+        export http_proxy="http://127.0.0.1:1081"
+        export https_proxy="http://127.0.0.1:1081"
+        export all_proxy="socks5://127.0.0.1:1080"
+        export no_proxy="localhost,127.0.0.1,::1,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+        echo "✅ VPN перезапущен"
+    else
+        echo "❌ Ошибка перезапуска VPN"
+    fi
+}
+
+# Статус VPN с деталями
+vpn-status() {
+    echo ""
+    echo "╔════════════════════════════════════════════════════════════╗"
+    echo "║  🌐 Статус VPN (Xray vless client)                        ║"
+    echo "╚════════════════════════════════════════════════════════════╝"
+    echo ""
+
+    # Проверить статус сервиса
+    if systemctl is-active --quiet xray; then
+        echo "🟢 Сервис: РАБОТАЕТ"
+    else
+        echo "🔴 Сервис: ОСТАНОВЛЕН"
+    fi
+
+    # Проверить автозапуск
+    if systemctl is-enabled --quiet xray 2>/dev/null; then
+        echo "⚙️  Автозапуск: ВКЛЮЧЕН"
+    else
+        echo "⚙️  Автозапуск: ВЫКЛЮЧЕН"
+    fi
+
+    # Проверить порты
+    echo ""
+    if ss -tlnp 2>/dev/null | grep -q ":1080"; then
+        echo "🔌 SOCKS5: 127.0.0.1:1080 ✅"
+    else
+        echo "🔌 SOCKS5: 127.0.0.1:1080 ❌"
+    fi
+
+    if ss -tlnp 2>/dev/null | grep -q ":1081"; then
+        echo "🔌 HTTP:   127.0.0.1:1081 ✅"
+    else
+        echo "🔌 HTTP:   127.0.0.1:1081 ❌"
+    fi
+
+    # Проверить переменные окружения
+    echo ""
+    if [[ -n "$http_proxy" ]]; then
+        echo "🌍 Прокси в ENV: $http_proxy ✅"
+    else
+        echo "🌍 Прокси в ENV: НЕ УСТАНОВЛЕН"
+        echo "   Выполните: vpn-on (или source /etc/profile.d/xray-proxy.sh)"
+    fi
+
+    # Проверить внешний IP
+    echo ""
+    echo "📍 Проверка внешнего IP..."
+    local external_ip=$(curl -s --max-time 5 https://api.ipify.org?format=json 2>/dev/null | grep -o '"ip":"[^"]*"' | cut -d'"' -f4)
+    if [[ -n "$external_ip" ]]; then
+        echo "   IP: $external_ip"
+
+        # Определить через VPN или нет (примерно)
+        if [[ "$external_ip" == "5.144.180.112" ]] || [[ "$external_ip" =~ ^5\.144\. ]]; then
+            echo "   🇰🇬 Через VPN (Кыргызстан)"
+        else
+            echo "   🌍 Прямое подключение"
+        fi
+    else
+        echo "   ⚠️  Не удалось получить IP"
+    fi
+
+    echo ""
+    echo "Команды:"
+    echo "  vpn-on       - Включить VPN"
+    echo "  vpn-off      - Выключить VPN"
+    echo "  vpn-restart  - Перезапустить VPN"
+    echo "  vpn-logs     - Показать логи"
+    echo "  novpn <cmd>  - Выполнить команду БЕЗ VPN"
+    echo ""
+}
+
+# Показать логи VPN
+vpn-logs() {
+    local lines="${1:-50}"
+    echo "📋 Последние $lines строк логов Xray:"
+    echo ""
+    journalctl -u xray -n "$lines" --no-pager
+}
+
+# Логи в реальном времени
+vpn-logs-follow() {
+    echo "📋 Логи Xray в реальном времени (Ctrl+C для выхода):"
+    echo ""
+    journalctl -u xray -f
+}
+
+# Выполнить команду БЕЗ прокси (временно)
+novpn() {
+    if [[ $# -eq 0 ]]; then
+        echo "Использование: novpn <команда>"
+        echo "Пример: novpn curl https://api.ipify.org"
+        return 1
+    fi
+
+    (
+        unset http_proxy https_proxy all_proxy no_proxy
+        unset HTTP_PROXY HTTPS_PROXY ALL_PROXY NO_PROXY
+        "$@"
+    )
+}
+
+# Тест VPN подключения
+vpn-test() {
+    echo ""
+    echo "🧪 Тестирование VPN подключения..."
+    echo ""
+
+    # Тест 1: Статус сервиса
+    echo "1️⃣  Проверка сервиса Xray..."
+    if systemctl is-active --quiet xray; then
+        echo "   ✅ Сервис запущен"
+    else
+        echo "   ❌ Сервис не запущен"
+        echo "   Запустите: vpn-on"
+        return 1
+    fi
+
+    # Тест 2: Порты
+    echo ""
+    echo "2️⃣  Проверка портов прокси..."
+    if ss -tlnp 2>/dev/null | grep -q ":1080" && ss -tlnp 2>/dev/null | grep -q ":1081"; then
+        echo "   ✅ Порты 1080 и 1081 открыты"
+    else
+        echo "   ❌ Порты не открыты"
+        return 1
+    fi
+
+    # Тест 3: Подключение через HTTP прокси
+    echo ""
+    echo "3️⃣  Тест подключения через HTTP прокси..."
+    if curl -s --proxy http://127.0.0.1:1081 --max-time 10 https://api.ipify.org &>/dev/null; then
+        echo "   ✅ HTTP прокси работает"
+        local ip=$(curl -s --proxy http://127.0.0.1:1081 --max-time 5 https://api.ipify.org)
+        echo "   IP через прокси: $ip"
+    else
+        echo "   ❌ HTTP прокси не работает"
+        return 1
+    fi
+
+    # Тест 4: Подключение через SOCKS5
+    echo ""
+    echo "4️⃣  Тест подключения через SOCKS5..."
+    if curl -s --socks5 127.0.0.1:1080 --max-time 10 https://api.ipify.org &>/dev/null; then
+        echo "   ✅ SOCKS5 прокси работает"
+    else
+        echo "   ❌ SOCKS5 прокси не работает"
+    fi
+
+    echo ""
+    echo "✅ Все тесты пройдены! VPN работает корректно."
+}
+
+# Алиасы для VPN
+alias vpn='vpn-status'
+alias vpnlogs='vpn-logs'
+alias vpnlog='vpn-logs-follow'
 
