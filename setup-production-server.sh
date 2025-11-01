@@ -206,6 +206,13 @@ setup_current_user() {
 
     local home_dir="/home/$current_user"
 
+    # Создать группу dev_team если не существует
+    if ! getent group dev_team > /dev/null 2>&1; then
+        log_info "Создание группы dev_team..."
+        groupadd dev_team
+        log_success "Группа dev_team создана"
+    fi
+
     # Добавить в группы
     log_info "Добавление $current_user в группы..."
     usermod -aG sudo,docker,dev_team "$current_user" 2>/dev/null || true
