@@ -381,8 +381,13 @@ server {
 EOF
 
     # Оптимизация
-    sed -i 's/# gzip on;/gzip on;\n\tgzip_vary on;\n\tgzip_comp_level 6;\n\tgzip_types text\/plain text\/css text\/xml application\/json application\/javascript;/' /etc/nginx/nginx.conf
-    sed -i '/http {/a \\tclient_max_body_size 100M;' /etc/nginx/nginx.conf
+    if ! grep -q "gzip_vary on" /etc/nginx/nginx.conf; then
+        sed -i 's/# gzip on;/gzip on;\n\tgzip_vary on;\n\tgzip_comp_level 6;\n\tgzip_types text\/plain text\/css text\/xml application\/json application\/javascript;/' /etc/nginx/nginx.conf
+    fi
+
+    if ! grep -q "client_max_body_size" /etc/nginx/nginx.conf; then
+        sed -i '/http {/a \\tclient_max_body_size 100M;' /etc/nginx/nginx.conf
+    fi
 
     # Запустить
     systemctl enable nginx
@@ -589,10 +594,12 @@ final_checks() {
     log_info "Проверка Fail2ban..."
     systemctl is-active fail2ban && log_success "Fail2ban: OK" || log_error "Fail2ban: FAIL"
 
-    log_info "Проверка пользователей..."
-    for username in "$USER1_NAME" "$USER2_NAME" "$USER3_NAME"; do
-        id "$username" && log_success "Пользователь $username: OK" || log_error "Пользователь $username: FAIL"
-    done
+    log_info "Проверка текущего пользователя..."
+    local current_user="${SUDO_USER:-$(whoami)}"
+    if [ "$current_user" != "root" ]; then
+        id "$current_user" && log_success "Пользователь $current_user: OK" || log_error "Пользователь $current_user: FAIL"
+        groups "$current_user" | grep -q "docker" && log_success "В группе docker: OK" || log_warning "В группе docker: FAIL"
+    fi
 
     log_info "Проверка Zsh..."
     zsh --version && log_success "Zsh: OK" || log_error "Zsh: FAIL"
