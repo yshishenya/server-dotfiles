@@ -574,7 +574,7 @@ vpn-on() {
         echo "✅ VPN включен"
         echo ""
         echo "🌍 Проверка внешнего IP..."
-        local external_ip=$(curl -s --max-time 5 https://api.ipify.org?format=json 2>/dev/null | grep -o '"ip":"[^"]*"' | cut -d'"' -f4)
+        local external_ip=$(curl -s --max-time 5 'https://api.ipify.org?format=json' 2>/dev/null | grep -o '"ip":"[^"]*"' | cut -d'"' -f4)
         if [[ -n "$external_ip" ]]; then
             echo "📍 Текущий IP: $external_ip"
         else
@@ -597,7 +597,7 @@ vpn-off() {
     echo "❌ VPN выключен"
     echo ""
     echo "🌍 Проверка внешнего IP..."
-    local external_ip=$(curl -s --max-time 5 https://api.ipify.org?format=json 2>/dev/null | grep -o '"ip":"[^"]*"' | cut -d'"' -f4)
+    local external_ip=$(curl -s --max-time 5 'https://api.ipify.org?format=json' 2>/dev/null | grep -o '"ip":"[^"]*"' | cut -d'"' -f4)
     if [[ -n "$external_ip" ]]; then
         echo "📍 Текущий IP: $external_ip"
     else
@@ -670,7 +670,7 @@ vpn-status() {
     # Проверить внешний IP
     echo ""
     echo "📍 Проверка внешнего IP..."
-    local external_ip=$(curl -s --max-time 5 https://api.ipify.org?format=json 2>/dev/null | grep -o '"ip":"[^"]*"' | cut -d'"' -f4)
+    local external_ip=$(curl -s --max-time 5 'https://api.ipify.org?format=json' 2>/dev/null | grep -o '"ip":"[^"]*"' | cut -d'"' -f4)
     if [[ -n "$external_ip" ]]; then
         echo "   IP: $external_ip"
 
@@ -753,9 +753,9 @@ vpn-test() {
     # Тест 3: Подключение через HTTP прокси
     echo ""
     echo "3️⃣  Тест подключения через HTTP прокси..."
-    if curl -s --proxy http://127.0.0.1:1081 --max-time 10 https://api.ipify.org &>/dev/null; then
+    if curl -s --proxy http://127.0.0.1:1081 --max-time 10 'https://api.ipify.org' &>/dev/null; then
         echo "   ✅ HTTP прокси работает"
-        local ip=$(curl -s --proxy http://127.0.0.1:1081 --max-time 5 https://api.ipify.org)
+        local ip=$(curl -s --proxy http://127.0.0.1:1081 --max-time 5 'https://api.ipify.org')
         echo "   IP через прокси: $ip"
     else
         echo "   ❌ HTTP прокси не работает"
@@ -765,7 +765,7 @@ vpn-test() {
     # Тест 4: Подключение через SOCKS5
     echo ""
     echo "4️⃣  Тест подключения через SOCKS5..."
-    if curl -s --socks5 127.0.0.1:1080 --max-time 10 https://api.ipify.org &>/dev/null; then
+    if curl -s --socks5 127.0.0.1:1080 --max-time 10 'https://api.ipify.org' &>/dev/null; then
         echo "   ✅ SOCKS5 прокси работает"
     else
         echo "   ❌ SOCKS5 прокси не работает"
