@@ -296,15 +296,19 @@ install_zsh() {
 
     # Установить для каждого пользователя
     for username in "$USER1_NAME" "$USER2_NAME" "$USER3_NAME"; do
-        log_info "Установка Oh My Zsh для $username..."
+        local home_dir="/home/$username"
 
         # Изменить shell
-        chsh -s $(which zsh) "$username"
+        chsh -s $(which zsh) "$username" 2>/dev/null || true
 
-        # Установить Oh My Zsh
-        sudo -u "$username" sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-
-        log_success "Oh My Zsh установлен для $username"
+        # Установить Oh My Zsh если еще не установлен
+        if [ ! -d "$home_dir/.oh-my-zsh" ]; then
+            log_info "Установка Oh My Zsh для $username..."
+            sudo -u "$username" sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+            log_success "Oh My Zsh установлен для $username"
+        else
+            log_warning "Oh My Zsh уже установлен для $username"
+        fi
     done
 }
 
