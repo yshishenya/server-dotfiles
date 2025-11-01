@@ -28,35 +28,8 @@ NC='\033[0m' # No Color
 # Общие параметры
 DOTFILES_REPO="https://github.com/yshishenya/server-dotfiles.git"
 CERTBOT_EMAIL="yshishenya@gmail.com"
-DEFAULT_PASSWORD="Pr0ffes4.0"
 PYTHON_VERSIONS=("3.11.9" "3.12.3")
 NODE_VERSIONS=("18" "20")
-
-# Пользователь 1: yan (yshishenya)
-USER1_NAME="yan"
-USER1_GIT_NAME="yshishenya"
-USER1_GIT_EMAIL="yshishenya@gmail.com"
-USER1_SSH_KEYS=(
-    "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCjiKHD49QR2mDa8sgHiioThO0nAhGZ5/jGIREpflUShyz3WHawabWzIaaixypHpg14YrLJgCYF2q4FcCFoTvjyjtnfxxx00F/JilTcV6QQxztupeJkAO0PkMACxi7z01PovQevVCkoRXVDnh+Yjnu0KXBQKVseR/P1+Zall5jhCofyZJdNWeyS5zgW4NGVMG8N1U9cOuNuX9ye3PAKlwYNPQB266Qf13H+ymtCxnfeZMmCgopwYGTWCHcVAwu9QoNNaGi2xx9rrOuYg9rNCmCh0DTuqTdku3GXC2eqenlzlJAvWAytwGkjS53PM+Fji3x0WoxCrUEuXHc5bAWqwlQ9jUAk9yVP0I/kfkGyjP+Hdubdruld0LSKv8nsgUg16mWHga8OBW9YY++YqKNYQjaSK4eHRpXDQEyBvJQwMuI+yznnjVFb3phuf00ezVfBwujc84uQCQYNp9KC/eqAy+uEILdImOD3/h+oaDpUyOWGjJgLk8IobRbSvYPQm+pnDwk= evgeny@Evgenys-MacBook-Pro.local"
-    "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC1kHs1bfMW/x59ZNqNtirIX4VrCnr8xEHDYCo/424D2cuiEk/IFWwX6/M/shhuGrFZZ04ZSRE8ZmzkJdOWOyaGfJqUusLHqkTMjgXWOs3CLJ41Tf/av7DuRJKd98OfTcsgKovNC74uyfuRVxNGPJeXLSWxhuNhpeWFoiLGMWEgYt3T3eCVoDm/PVaMF8nhxPERmhWJvkjiygGm1gZ1e+cO1v0Eqg5QXIToqTuBDOKlBMrx2UTggVkNVH66MSOMvHr1Z2kGLn3w2BHRjibgsB/lKL6UulakhIaIC/CunR5+XTwWBnWR/qQqWIu6uc3k7lwVifxpt/W9yTgkD35bvnWAGMGz0fBYHuaUhq9deZ2k85sbYZDfCiOpOAAD7xewdvlG/hWt517tLW+cB1Lj3bJHB9tDDgJAXQyhYbTMvhYKLAO1t3FaBi1j8YnLDTwocTpJaHhZMYY9yg+B7aF0UQ0gdI86CRq897zXPALgMnrKDRiz+oYWkGHgYpNKIXYqfO8= yshishenya@MacBook-Pro-Yan.local"
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII1zvD/lJmRT536AL1iCDLVeSzQlBMIBReP5XQqTf1kx y.shishenya@gmail.com"
-)
-
-# Пользователь 2: alex (Alexey Fedushin)
-USER2_NAME="alex"
-USER2_GIT_NAME="Alexey Fedushin"
-USER2_GIT_EMAIL="alexeyfedyshinural@gmail.com"
-USER2_SSH_KEYS=(
-    "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDNFi2fM4oIuzsvDuQYkf4MbRfpltv22P7SpWgmqLpqYG3iWL4OfntBbN76T6sIYhfnO8VQTCGsjMznot5dq4trHjjBTku0AMRhXMala8ZPNdqVAGcilq55ujjWLMQJsyRHzW0onea0CwfUHMwDD+e/iqke2QA/MH6+mN92xaaTYevCJLCdzePQutmdrTPKeCxwvLSX+p/bbXqXahDJp/HoXu9WbXda5xm1000GpC3Wal2mTs/971xmad09VgFr4cdy6jlrDl3hPJA+YKZlX7sis0sNxlYLwR7Fuorl69dA8cXfce50Q9ucXLMIJgwi1MfRxTK5iJt3UWuQw/dx8gtbKqWGut4fuQf/tIMi2Q98sLPR5DksItkU6ypVI9gy5j0400owR4rRNxRewi+MDpL2A1k+wiFrY3suFjO4BEUQjDg0n7cwrZ0fjchgxnPxXwfPc2XHSEdblCGd8aN1QRZ/8ds2CRLgjPTtiK2myPusT4A0DnPqS5psi5OibuaTP7c= naladhiki@DESKTOP-I27VA2G"
-    "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDEGvkRXgwFZgkgGRy4eOVE6IoDR4jhl7gCjcu6b2C373MYI5bzB1SDUEgI6yVYaGSl+ckL8/qWeb3+9594Sr0t0tcFjECbqdjle7A7sTSer/+wIy+P5ZRukCoFfs/wIPftHq0ZkQxe2d/jwIedEiFw/x0cuLHn1XYYLOQx7o/zZZCy6Vy8SvJwbn2fe04gqsaBhZb+0ihYGl7+qnR7jGtTVjiWxduqAURnbvDdXJmvIaRaMIkvUNKv7c1rRTaTIVgIwuq6JOoyTSwfpiSYog85XxLlqC8ibJhV4KtsPuwmIJzPWL6CGbQPsMILjOfyK8YAblHNYQKCXh9xL1dB1RThXhU2MDthWRdf14nVY+g4drUYozECEUDJ0uNNMzNLbg8eT28ZwNNbtSw2kRzwaItOrPSs8UtwqgNUqMFoFobTKroR55pzXW78/eJUKBnLnEpX03UOUXX8bvuSWwvOnK0VByXUdJLZo3OKjwkdXF3CwHgcOVIrKtZempqo4sqB1AU= alexe@DESKTOP-RUOC6JI"
-    "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDGfMKWiT3QfmngmCp9+D31ZEbRYGTIYiLKEdwIi174KQXr0HYemKnwozwiy0zUjSzU0gs33fq/H4Xd/m0YiYPYsWhs62BfgVfjrN0/7Xg+vKGg7U6eS8QP1uewGGWLitZbFvuVi2SikrCqRSs7bVpIiQht0wApuYO8SN3o7W0cVQTxAmaRQyS0PShc9Y8vL0fmIfOiM22/l822xHdTShC0ggSZq8SlD3GnPrDaeEsZaGgf5Q1ALe25zwfb9YvA1Y5a7Nr547lJ7aB+SYmAEUTyq6fhWvb1+ojt1KUGS8FkBhDI5ToIk/Y2WwrrHYJkLdt0kzEUFPPXU6dDhDJNeNEFzvNNQSNH6sI5k4Ro5IOIXI19NoI12ntSLTmwdQml/7EyhZbsWEBBIpXUsn9ooyvOecwI5Xee/GVNdz/fJ/ftZKIMnhKwJ2VsmtVcN9TfzVS8aUeRvuQq6eot/l0cjsHF5f/XFW2mD4RRJ8II5h9v3tJPkeQUB4CLyKDQggB7zOTB+o2IOOCZSE3WqVCd87M6SAuTjqg0r65v4WCgrS9tsUO1YNRzUm8KOeLS794dXz4bxMPc6Qddu9aer0L9z8NcK5MY4/aHIL2Bh5mBsyqzJNFaTGpqvQFtfG13xFpBZuqIIG9IEpUlNlmdUXdNsDZL2E7lpvm9i2jq+stSmEuwvw== alexeyfedyshinural@gmail.com"
-)
-
-# Пользователь 3: deploy (для CI/CD)
-USER3_NAME="deploy"
-USER3_GIT_NAME="Deploy Bot"
-USER3_GIT_EMAIL="yshishenya@gmail.com"
-# SSH ключ для deploy будет сгенерирован автоматически
 
 ################################################################################
 # ФУНКЦИИ
@@ -159,84 +132,7 @@ install_base_packages() {
     log_success "Базовые пакеты установлены"
 }
 
-# 3. Создание пользователей
-create_users() {
-    print_section "Создание пользователей"
-
-    # Создать группу dev_team если не существует
-    if ! getent group dev_team > /dev/null 2>&1; then
-        log_info "Создание группы dev_team..."
-        groupadd dev_team
-        log_success "Группа dev_team создана"
-    fi
-
-    # Пользователь 1: yan
-    create_user "$USER1_NAME" "$USER1_GIT_NAME" "$USER1_GIT_EMAIL" "sudo,docker,dev_team" USER1_SSH_KEYS[@]
-
-    # Пользователь 2: alex
-    create_user "$USER2_NAME" "$USER2_GIT_NAME" "$USER2_GIT_EMAIL" "sudo,docker,dev_team" USER2_SSH_KEYS[@]
-
-    # Пользователь 3: deploy (без sudo)
-    create_user "$USER3_NAME" "$USER3_GIT_NAME" "$USER3_GIT_EMAIL" "docker,dev_team"
-}
-
-# Функция создания пользователя
-create_user() {
-    local username=$1
-    local git_name=$2
-    local git_email=$3
-    local groups=$4
-    local -n ssh_keys=$5
-
-    log_info "Создание пользователя: $username"
-
-    # Создать пользователя если не существует
-    if id "$username" &>/dev/null; then
-        log_warning "Пользователь $username уже существует"
-    else
-        useradd -m -s /bin/zsh -G "$groups" "$username"
-        log_success "Пользователь $username создан"
-    fi
-
-    # Установить пароль
-    echo "$username:$DEFAULT_PASSWORD" | chpasswd
-    log_success "Пароль установлен: $DEFAULT_PASSWORD"
-
-    # Настроить SSH
-    local ssh_dir="/home/$username/.ssh"
-    mkdir -p "$ssh_dir"
-    chmod 700 "$ssh_dir"
-
-    # Добавить SSH ключи
-    if [ ${#ssh_keys[@]} -gt 0 ]; then
-        local auth_keys="$ssh_dir/authorized_keys"
-        touch "$auth_keys"
-        chmod 600 "$auth_keys"
-
-        for key in "${ssh_keys[@]}"; do
-            echo "$key" >> "$auth_keys"
-        done
-
-        log_success "Добавлено ${#ssh_keys[@]} SSH ключ(ей)"
-    fi
-
-    # Если это deploy - сгенерировать ключ
-    if [ "$username" == "$USER3_NAME" ]; then
-        log_info "Генерация SSH ключа для $username..."
-        sudo -u "$username" ssh-keygen -t ed25519 -f "$ssh_dir/id_ed25519" -N "" -C "$git_email"
-        log_success "SSH ключ сгенерирован: $ssh_dir/id_ed25519.pub"
-    fi
-
-    # Установить владельца
-    chown -R "$username:$username" "$ssh_dir"
-
-    # Настроить Git
-    sudo -u "$username" git config --global user.name "$git_name"
-    sudo -u "$username" git config --global user.email "$git_email"
-    log_success "Git настроен: $git_name <$git_email>"
-}
-
-# 4. Установка Docker
+# 3. Установка Docker
 install_docker() {
     print_section "Установка Docker"
 
@@ -283,9 +179,9 @@ EOF
     log_success "Docker установлен: $docker_version"
 }
 
-# 5. Установка Zsh и Oh My Zsh для всех пользователей
+# 4. Установка Zsh
 install_zsh() {
-    print_section "Установка Zsh и Oh My Zsh"
+    print_section "Установка Zsh"
 
     # Установить Zsh
     log_info "Установка Zsh..."
@@ -293,63 +189,16 @@ install_zsh() {
 
     local zsh_version=$(zsh --version)
     log_success "Zsh установлен: $zsh_version"
-
-    # Установить для каждого пользователя
-    for username in "$USER1_NAME" "$USER2_NAME" "$USER3_NAME"; do
-        local home_dir="/home/$username"
-
-        # Изменить shell
-        chsh -s $(which zsh) "$username" 2>/dev/null || true
-
-        # Установить Oh My Zsh если еще не установлен
-        if [ ! -d "$home_dir/.oh-my-zsh" ]; then
-            log_info "Установка Oh My Zsh для $username..."
-            sudo -u "$username" sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-            log_success "Oh My Zsh установлен для $username"
-        else
-            log_warning "Oh My Zsh уже установлен для $username"
-        fi
-    done
 }
 
-# 6. Применить dotfiles
-apply_dotfiles() {
-    print_section "Применение dotfiles"
-
-    for username in "$USER1_NAME" "$USER2_NAME" "$USER3_NAME"; do
-        local home_dir="/home/$username"
-
-        log_info "Клонирование dotfiles для $username..."
-
-        # Клонировать dotfiles
-        if [ -d "$home_dir/dotfiles" ]; then
-            log_warning "Директория $home_dir/dotfiles уже существует"
-            sudo -u "$username" bash -c "cd $home_dir/dotfiles && git pull"
-        else
-            sudo -u "$username" bash -c "cd $home_dir && git clone '$DOTFILES_REPO' dotfiles"
-        fi
-
-        # Установить плагины
-        log_info "Установка плагинов Oh My Zsh для $username..."
-        sudo -u "$username" bash "$home_dir/dotfiles/install-plugins.sh"
-
-        # Скопировать конфиги
-        log_info "Применение конфигурации для $username..."
-        sudo -u "$username" cp "$home_dir/dotfiles/.zshrc" "$home_dir/.zshrc"
-        sudo -u "$username" cp "$home_dir/dotfiles/.p10k.zsh" "$home_dir/.p10k.zsh"
-
-        log_success "Dotfiles применены для $username"
-    done
-}
-
-# 6.1 Настройка текущего пользователя (кто запустил sudo)
+# 5. Настройка текущего пользователя (кто запустил sudo)
 setup_current_user() {
     # Определить пользователя, который запустил sudo
     local current_user="${SUDO_USER:-$(whoami)}"
 
-    # Пропустить если это root или уже настроенные пользователи
-    if [ "$current_user" = "root" ] || [ "$current_user" = "$USER1_NAME" ] || [ "$current_user" = "$USER2_NAME" ] || [ "$current_user" = "$USER3_NAME" ]; then
-        log_info "Текущий пользователь ($current_user) уже настроен или это root"
+    # Пропустить если это root
+    if [ "$current_user" = "root" ]; then
+        log_warning "Запуск от root - настройка пользователя пропущена"
         return
     fi
 
@@ -425,6 +274,17 @@ EOF"
     # Установить дефолтную версию
     sudo -u "$current_user" bash -c "export NVM_DIR=\"$home_dir/.nvm\" && [ -s \"\$NVM_DIR/nvm.sh\" ] && . \"\$NVM_DIR/nvm.sh\" && nvm alias default ${NODE_VERSIONS[0]}"
 
+    # Настроить git delta (если установлен)
+    if command -v delta &> /dev/null; then
+        log_info "Настройка git delta для $current_user..."
+        sudo -u "$current_user" git config --global core.pager "delta"
+        sudo -u "$current_user" git config --global interactive.diffFilter "delta --color-only"
+        sudo -u "$current_user" git config --global delta.navigate true
+        sudo -u "$current_user" git config --global delta.side-by-side true
+        sudo -u "$current_user" git config --global delta.line-numbers true
+        log_success "Git delta настроен"
+    fi
+
     log_success "Полная настройка применена для $current_user"
 }
 
@@ -455,18 +315,13 @@ main() {
     install_base_packages
     install_docker
     install_zsh
-    create_users
-    apply_dotfiles
-    setup_current_user
-    install_pyenv
-    install_nvm
     install_nginx
     install_certbot
     install_fail2ban
     install_modern_utils
+    setup_current_user
     setup_projects_structure
     create_utility_scripts
-    configure_git
     configure_ssh
     final_checks
     print_summary
@@ -475,69 +330,7 @@ main() {
 # Запуск
 main "$@"
 
-# 7. Установка pyenv и Python
-install_pyenv() {
-    print_section "Установка pyenv и Python"
-
-    for username in "$USER1_NAME" "$USER2_NAME" "$USER3_NAME"; do
-        local home_dir="/home/$username"
-
-        log_info "Установка pyenv для $username..."
-
-        # Установить pyenv
-        sudo -u "$username" bash -c "curl https://pyenv.run | bash"
-
-        # Добавить в .zshrc если еще не добавлено
-        if ! sudo -u "$username" grep -q "PYENV_ROOT" "$home_dir/.zshrc"; then
-            sudo -u "$username" bash -c "cat >> $home_dir/.zshrc <<'EOF'
-
-# Pyenv configuration
-export PYENV_ROOT=\"\$HOME/.pyenv\"
-export PATH=\"\$PYENV_ROOT/bin:\$PATH\"
-eval \"\$(pyenv init -)\"
-eval \"\$(pyenv virtualenv-init -)\"
-EOF"
-        fi
-
-        # Установить Python версии
-        for py_version in "${PYTHON_VERSIONS[@]}"; do
-            log_info "Установка Python $py_version для $username..."
-            sudo -u "$username" bash -c "export PYENV_ROOT=\"$home_dir/.pyenv\" && export PATH=\"\$PYENV_ROOT/bin:\$PATH\" && pyenv install -s $py_version"
-        done
-
-        # Установить глобальную версию
-        sudo -u "$username" bash -c "export PYENV_ROOT=\"$home_dir/.pyenv\" && export PATH=\"\$PYENV_ROOT/bin:\$PATH\" && pyenv global ${PYTHON_VERSIONS[-1]}"
-
-        log_success "pyenv и Python установлены для $username"
-    done
-}
-
-# 8. Установка nvm и Node.js
-install_nvm() {
-    print_section "Установка nvm и Node.js"
-
-    for username in "$USER1_NAME" "$USER2_NAME" "$USER3_NAME"; do
-        local home_dir="/home/$username"
-
-        log_info "Установка nvm для $username..."
-
-        # Установить nvm
-        sudo -u "$username" bash -c "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash"
-
-        # Установить Node.js версии
-        for node_version in "${NODE_VERSIONS[@]}"; do
-            log_info "Установка Node.js $node_version для $username..."
-            sudo -u "$username" bash -c "export NVM_DIR=\"$home_dir/.nvm\" && [ -s \"\$NVM_DIR/nvm.sh\" ] && . \"\$NVM_DIR/nvm.sh\" && nvm install $node_version"
-        done
-
-        # Установить версию по умолчанию
-        sudo -u "$username" bash -c "export NVM_DIR=\"$home_dir/.nvm\" && [ -s \"\$NVM_DIR/nvm.sh\" ] && . \"\$NVM_DIR/nvm.sh\" && nvm alias default ${NODE_VERSIONS[0]}"
-
-        log_success "nvm и Node.js установлены для $username"
-    done
-}
-
-# 9. Установка Nginx
+# 6. Установка Nginx
 install_nginx() {
     print_section "Установка Nginx"
 
@@ -767,25 +560,7 @@ EOF
     log_success "Утилиты созданы: project-status, backup-docker-volumes, backup-projects"
 }
 
-# 16. Настройка Git для пользователей
-configure_git() {
-    print_section "Дополнительная настройка Git"
-
-    for username in "$USER1_NAME" "$USER2_NAME" "$USER3_NAME"; do
-        local home_dir="/home/$username"
-
-        # Настроить delta как pager
-        sudo -u "$username" git config --global core.pager "delta"
-        sudo -u "$username" git config --global interactive.diffFilter "delta --color-only"
-        sudo -u "$username" git config --global delta.navigate true
-        sudo -u "$username" git config --global delta.side-by-side true
-        sudo -u "$username" git config --global delta.line-numbers true
-
-        log_success "Git delta настроен для $username"
-    done
-}
-
-# 17. Финальные проверки
+# 7. Финальные проверки
 final_checks() {
     print_section "Финальные проверки"
 
@@ -811,21 +586,22 @@ final_checks() {
 print_summary() {
     print_section "УСТАНОВКА ЗАВЕРШЕНА"
 
+    local current_user="${SUDO_USER:-$(whoami)}"
+
     echo "✓ Система обновлена"
-    echo "✓ Созданы пользователи:"
-    echo "    - $USER1_NAME (sudo, docker, dev_team)"
-    echo "    - $USER2_NAME (sudo, docker, dev_team)"
-    echo "    - $USER3_NAME (docker, dev_team)"
+    echo "✓ Настроен пользователь: $current_user"
+    echo "    - Группы: sudo, docker, dev_team"
+    echo "    - Shell: Zsh + Oh My Zsh + Powerlevel10k"
+    echo "    - Python: ${PYTHON_VERSIONS[*]} (через pyenv)"
+    echo "    - Node.js: ${NODE_VERSIONS[*]} (через nvm)"
     echo ""
     echo "✓ Установлено ПО:"
     echo "    - Docker + Docker Compose"
-    echo "    - Zsh + Oh My Zsh + Powerlevel10k"
-    echo "    - pyenv + Python ${PYTHON_VERSIONS[*]}"
-    echo "    - nvm + Node.js ${NODE_VERSIONS[*]}"
     echo "    - Nginx"
     echo "    - Certbot (email: $CERTBOT_EMAIL)"
     echo "    - Fail2ban"
-    echo "    - Современные утилиты (bat, eza, fzf, lazygit, и др.)"
+    echo "    - Современные утилиты: bat, eza, fzf, ripgrep, fd,"
+    echo "      lazygit, lazydocker, delta, zoxide, btop, tldr, tmux"
     echo ""
     echo "✓ Структура:"
     echo "    - /opt/projects (проекты)"
@@ -833,29 +609,23 @@ print_summary() {
     echo ""
     echo "📝 ВАЖНО:"
     echo ""
-    echo "1. Пароль для всех пользователей: $DEFAULT_PASSWORD"
-    echo "   Измените пароли: passwd"
+    echo "1. Для применения настроек zsh:"
+    echo "   exec zsh  (или перелогиниться)"
     echo ""
-    echo "2. SSH настроен, но НЕ перезапущен!"
+    echo "2. SSH настроен (только ключи, пароли отключены)"
     echo "   Перед перезапуском SSH:"
     echo "   - Проверьте что можете зайти по SSH ключу"
     echo "   - Сохраните текущую сессию открытой"
     echo "   - Затем: sudo systemctl restart sshd"
     echo ""
-    echo "3. Публичный ключ для deploy пользователя:"
-    echo "   cat /home/$USER3_NAME/.ssh/id_ed25519.pub"
-    echo "   Добавьте этот ключ в GitHub/GitLab для CI/CD"
+    echo "3. Настройте Git:"
+    echo "   git config --global user.name \"Your Name\""
+    echo "   git config --global user.email \"your@email.com\""
     echo ""
-    echo "4. Для применения настроек zsh:"
-    echo "   exec zsh  (или перелогиниться)"
-    echo ""
-    echo "5. Полезные команды:"
-    echo "   project-status     - статус проектов и Docker"
-    echo "   backup-docker-volumes - бэкап Docker volumes"
-    echo "   backup-projects    - бэкап проектов"
-    echo ""
-    echo "6. Документация:"
-    echo "   ~/production-server-setup-guide.md"
+    echo "4. Полезные команды:"
+    echo "   project-status         - статус проектов и Docker"
+    echo "   backup-docker-volumes  - бэкап Docker volumes"
+    echo "   backup-projects        - бэкап проектов"
     echo ""
     echo "═══════════════════════════════════════"
     echo "  🎉 Сервер готов к работе!"
