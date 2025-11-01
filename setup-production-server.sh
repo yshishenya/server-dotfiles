@@ -208,7 +208,7 @@ create_user() {
     chmod 700 "$ssh_dir"
 
     # Добавить SSH ключи
-    if [ -n "$ssh_keys" ] && [ ${#ssh_keys[@]} -gt 0 ]; then
+    if [ ${#ssh_keys[@]} -gt 0 ]; then
         local auth_keys="$ssh_dir/authorized_keys"
         touch "$auth_keys"
         chmod 600 "$auth_keys"
@@ -322,7 +322,7 @@ apply_dotfiles() {
             log_warning "Директория $home_dir/dotfiles уже существует"
             sudo -u "$username" bash -c "cd $home_dir/dotfiles && git pull"
         else
-            sudo -u "$username" git clone "$DOTFILES_REPO" "$home_dir/dotfiles"
+            sudo -u "$username" bash -c "cd $home_dir && git clone '$DOTFILES_REPO' dotfiles"
         fi
 
         # Установить плагины
@@ -363,9 +363,9 @@ main() {
     # Выполнение шагов
     update_system
     install_base_packages
-    create_users
     install_docker
     install_zsh
+    create_users
     apply_dotfiles
     install_pyenv
     install_nvm
