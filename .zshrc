@@ -118,14 +118,83 @@ source $ZSH/oh-my-zsh.sh
 
 
 
-alias ls='exa'
-alias ll='exa -l'
-alias la='exa -la'
-alias ltree='exa -T'
-alias fd='fdfind'
+# ========================================
+# 🚀 Современные утилиты (замены старых команд)
+# ========================================
+
+# eza - замена ls
+alias ls='eza --icons --group-directories-first'
+alias ll='eza -l --icons --group-directories-first --git'
+alias la='eza -la --icons --group-directories-first --git'
+alias lt='eza --tree --level=2 --icons'
+alias ltree='eza --tree --icons'
+alias l='eza -lah --icons --group-directories-first --git'
+
+# bat - замена cat
+alias cat='bat --paging=never'
+alias catp='bat'  # с paging
+alias ccat='/usr/bin/cat'  # оригинальный cat если нужен
+
+# ripgrep - замена grep
+alias grep='rg'
+alias oldgrep='/usr/bin/grep'  # оригинальный grep
+
+# fd - замена find
+alias find='fd'
+alias oldfind='/usr/bin/find'  # оригинальный find
+
+# zoxide - умный cd
+eval "$(zoxide init zsh)"
+alias cd='z'
+alias cdi='zi'  # интерактивный выбор
+alias oldcd='builtin cd'  # оригинальный cd
+
+# Git утилиты
+alias lg='lazygit'
+alias gd='git diff'  # будет использовать delta автоматически
+alias gl='git log --oneline --graph --decorate'
+
+# Docker утилиты
+alias ld='lazydocker'
+alias dps='docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"'
+alias dcu='docker compose up -d'
+alias dcd='docker compose down'
+alias dcl='docker compose logs -f'
+
+# Системные утилиты
+alias df='df -h'
+alias du='ncdu --color dark'
+alias free='free -h'
+alias top='btop'
+alias htop='btop'
+
+# Быстрые команды
 alias c="clear"
 alias x="exit"
 alias n="nano"
+alias v="vim"
+alias mkd="mkdir -p"
+alias rd="rmdir"
+
+# Навигация
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias ~='cd ~'
+
+# Безопасность
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+
+# Полезные функции
+alias ports='netstat -tulanp'
+alias myip='curl ifconfig.me'
+alias weather='curl wttr.in'
+
+# fzf интеграция
+alias preview='fzf --preview "bat --color=always {}"'
+alias vf='vim $(fzf --preview "bat --color=always {}")'  # открыть файл через fzf в vim
 # bun completions
 [ -s "/home/yan/.bun/_bun" ] && source "/home/yan/.bun/_bun"
 
