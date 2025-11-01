@@ -122,51 +122,80 @@ source $ZSH/oh-my-zsh.sh
 # 🚀 Современные утилиты (замены старых команд)
 # ========================================
 
-# eza - замена ls
-alias ls='eza --icons --group-directories-first'
-alias ll='eza -l --icons --group-directories-first --git'
-alias la='eza -la --icons --group-directories-first --git'
-alias lt='eza --tree --level=2 --icons'
-alias ltree='eza --tree --icons'
-alias l='eza -lah --icons --group-directories-first --git'
+# eza - замена ls (только если установлен)
+if command -v eza &> /dev/null; then
+    alias ls='eza --icons --group-directories-first'
+    alias ll='eza -l --icons --group-directories-first --git'
+    alias la='eza -la --icons --group-directories-first --git'
+    alias lt='eza --tree --level=2 --icons'
+    alias ltree='eza --tree --icons'
+    alias l='eza -lah --icons --group-directories-first --git'
+fi
 
-# bat - замена cat
-alias cat='bat --paging=never'
-alias catp='bat'  # с paging
-alias ccat='/usr/bin/cat'  # оригинальный cat если нужен
+# bat - замена cat (только если установлен)
+if command -v bat &> /dev/null; then
+    alias cat='bat --paging=never'
+    alias catp='bat'  # с paging
+    alias ccat='/usr/bin/cat'  # оригинальный cat если нужен
+elif command -v batcat &> /dev/null; then
+    alias bat='batcat'
+    alias cat='batcat --paging=never'
+    alias catp='batcat'
+    alias ccat='/usr/bin/cat'
+fi
 
-# ripgrep - замена grep
-alias grep='rg'
-alias oldgrep='/usr/bin/grep'  # оригинальный grep
+# ripgrep - замена grep (только если установлен)
+if command -v rg &> /dev/null; then
+    alias grep='rg'
+    alias oldgrep='/usr/bin/grep'  # оригинальный grep
+fi
 
-# fd - замена find
-alias find='fd'
-alias oldfind='/usr/bin/find'  # оригинальный find
+# fd - замена find (только если установлен)
+if command -v fd &> /dev/null; then
+    alias find='fd'
+    alias oldfind='/usr/bin/find'  # оригинальный find
+elif command -v fdfind &> /dev/null; then
+    alias fd='fdfind'
+    alias find='fdfind'
+    alias oldfind='/usr/bin/find'
+fi
 
-# zoxide - умный cd
-eval "$(zoxide init zsh)"
-alias cd='z'
-alias cdi='zi'  # интерактивный выбор
-alias oldcd='builtin cd'  # оригинальный cd
+# zoxide - умный cd (только если установлен)
+if command -v zoxide &> /dev/null; then
+    eval "$(zoxide init zsh)"
+    alias cd='z'
+    alias cdi='zi'  # интерактивный выбор
+    alias oldcd='builtin cd'  # оригинальный cd
+fi
 
 # Git утилиты
-alias lg='lazygit'
+if command -v lazygit &> /dev/null; then
+    alias lg='lazygit'
+fi
 alias gd='git diff'  # будет использовать delta автоматически
 alias gl='git log --oneline --graph --decorate'
 
 # Docker утилиты
-alias ld='lazydocker'
-alias dps='docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"'
-alias dcu='docker compose up -d'
-alias dcd='docker compose down'
-alias dcl='docker compose logs -f'
+if command -v lazydocker &> /dev/null; then
+    alias ld='lazydocker'
+fi
+if command -v docker &> /dev/null; then
+    alias dps='docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"'
+    alias dcu='docker compose up -d'
+    alias dcd='docker compose down'
+    alias dcl='docker compose logs -f'
+fi
 
 # Системные утилиты
 alias df='df -h'
-alias du='ncdu --color dark'
+if command -v ncdu &> /dev/null; then
+    alias du='ncdu --color dark'
+fi
 alias free='free -h'
-alias top='btop'
-alias htop='btop'
+if command -v btop &> /dev/null; then
+    alias top='btop'
+    alias htop='btop'
+fi
 
 # Быстрые команды
 alias c="clear"
