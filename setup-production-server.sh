@@ -338,6 +338,92 @@ apply_dotfiles() {
     done
 }
 
+# 6.1 Настройка текущего пользователя (кто запустил sudo)
+setup_current_user() {
+    # Определить пользователя, который запустил sudo
+    local current_user="${SUDO_USER:-$(whoami)}"
+
+    # Пропустить если это root или уже настроенные пользователи
+    if [ "$current_user" = "root" ] || [ "$current_user" = "$USER1_NAME" ] || [ "$current_user" = "$USER2_NAME" ] || [ "$current_user" = "$USER3_NAME" ]; then
+        log_info "Текущий пользователь ($current_user) уже настроен или это root"
+        return
+    fi
+
+    print_section "Настройка текущего пользователя: $current_user"
+
+    local home_dir="/home/$current_user"
+
+    # Добавить в группы
+    log_info "Добавление $current_user в группы..."
+    usermod -aG sudo,docker,dev_team "$current_user" 2>/dev/null || true
+
+    # Изменить shell на zsh
+    log_info "Установка zsh для $current_user..."
+    chsh -s $(which zsh) "$current_user" 2>/dev/null || true
+
+    # Установить Oh My Zsh если еще не установлен
+    if [ ! -d "$home_dir/.oh-my-zsh" ]; then
+        log_info "Установка Oh My Zsh для $current_user..."
+        sudo -u "$current_user" sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+    fi
+
+    # Клонировать dotfiles
+    log_info "Клонирование dotfiles для $current_user..."
+    if [ -d "$home_dir/dotfiles" ]; then
+        sudo -u "$current_user" bash -c "cd $home_dir/dotfiles && git pull"
+    else
+        sudo -u "$current_user" bash -c "cd $home_dir && git clone '$DOTFILES_REPO' dotfiles"
+    fi
+
+    # Установить плагины
+    log_info "Установка плагинов Oh My Zsh для $current_user..."
+    sudo -u "$current_user" bash "$home_dir/dotfiles/install-plugins.sh"
+
+    # Скопировать конфиги
+    log_info "Применение конфигурации для $current_user..."
+    sudo -u "$current_user" cp "$home_dir/dotfiles/.zshrc" "$home_dir/.zshrc"
+    sudo -u "$current_user" cp "$home_dir/dotfiles/.p10k.zsh" "$home_dir/.p10k.zsh"
+
+    # Установить pyenv
+    log_info "Установка pyenv для $current_user..."
+    sudo -u "$current_user" bash -c "curl https://pyenv.run | bash"
+
+    if ! sudo -u "$current_user" grep -q "PYENV_ROOT" "$home_dir/.zshrc"; then
+        sudo -u "$current_user" bash -c "cat >> $home_dir/.zshrc <<'EOF'
+
+# Pyenv configuration
+export PYENV_ROOT=\"\$HOME/.pyenv\"
+export PATH=\"\$PYENV_ROOT/bin:\$PATH\"
+eval \"\$(pyenv init -)\"
+eval \"\$(pyenv virtualenv-init -)\"
+EOF"
+    fi
+
+    # Установить Python версии
+    for py_version in "${PYTHON_VERSIONS[@]}"; do
+        log_info "Установка Python $py_version для $current_user..."
+        sudo -u "$current_user" bash -c "export PYENV_ROOT=\"$home_dir/.pyenv\" && export PATH=\"\$PYENV_ROOT/bin:\$PATH\" && pyenv install -s $py_version"
+    done
+
+    # Установить глобальную версию
+    sudo -u "$current_user" bash -c "export PYENV_ROOT=\"$home_dir/.pyenv\" && export PATH=\"\$PYENV_ROOT/bin:\$PATH\" && pyenv global ${PYTHON_VERSIONS[0]}"
+
+    # Установить nvm
+    log_info "Установка nvm для $current_user..."
+    sudo -u "$current_user" bash -c "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash"
+
+    # Установить Node.js версии
+    for node_version in "${NODE_VERSIONS[@]}"; do
+        log_info "Установка Node.js $node_version для $current_user..."
+        sudo -u "$current_user" bash -c "export NVM_DIR=\"$home_dir/.nvm\" && [ -s \"\$NVM_DIR/nvm.sh\" ] && . \"\$NVM_DIR/nvm.sh\" && nvm install $node_version"
+    done
+
+    # Установить дефолтную версию
+    sudo -u "$current_user" bash -c "export NVM_DIR=\"$home_dir/.nvm\" && [ -s \"\$NVM_DIR/nvm.sh\" ] && . \"\$NVM_DIR/nvm.sh\" && nvm alias default ${NODE_VERSIONS[0]}"
+
+    log_success "Полная настройка применена для $current_user"
+}
+
 # Продолжение в следующем сообщении (файл слишком большой)...
 
 ################################################################################
@@ -367,6 +453,7 @@ main() {
     install_zsh
     create_users
     apply_dotfiles
+    setup_current_user
     install_pyenv
     install_nvm
     install_nginx
