@@ -245,11 +245,12 @@ setup_current_user() {
     sudo -u "$current_user" cp "$home_dir/dotfiles/.p10k.zsh" "$home_dir/.p10k.zsh"
 
     # Установить pyenv
-    log_info "Установка pyenv для $current_user..."
-    sudo -u "$current_user" bash -c "curl https://pyenv.run | bash"
+    if [ ! -d "$home_dir/.pyenv" ]; then
+        log_info "Установка pyenv для $current_user..."
+        sudo -u "$current_user" bash -c "curl https://pyenv.run | bash"
 
-    if ! sudo -u "$current_user" grep -q "PYENV_ROOT" "$home_dir/.zshrc"; then
-        sudo -u "$current_user" bash -c "cat >> $home_dir/.zshrc <<'EOF'
+        if ! sudo -u "$current_user" grep -q "PYENV_ROOT" "$home_dir/.zshrc"; then
+            sudo -u "$current_user" bash -c "cat >> $home_dir/.zshrc <<'EOF'
 
 # Pyenv configuration
 export PYENV_ROOT=\"\$HOME/.pyenv\"
@@ -257,29 +258,40 @@ export PATH=\"\$PYENV_ROOT/bin:\$PATH\"
 eval \"\$(pyenv init -)\"
 eval \"\$(pyenv virtualenv-init -)\"
 EOF"
+        fi
+
+        # Установить Python версии
+        for py_version in "${PYTHON_VERSIONS[@]}"; do
+            log_info "Установка Python $py_version для $current_user..."
+            sudo -u "$current_user" bash -c "export PYENV_ROOT=\"$home_dir/.pyenv\" && export PATH=\"\$PYENV_ROOT/bin:\$PATH\" && pyenv install -s $py_version"
+        done
+
+        # Установить глобальную версию
+        sudo -u "$current_user" bash -c "export PYENV_ROOT=\"$home_dir/.pyenv\" && export PATH=\"\$PYENV_ROOT/bin:\$PATH\" && pyenv global ${PYTHON_VERSIONS[0]}"
+
+        log_success "pyenv установлен для $current_user"
+    else
+        log_warning "pyenv уже установлен для $current_user"
     fi
 
-    # Установить Python версии
-    for py_version in "${PYTHON_VERSIONS[@]}"; do
-        log_info "Установка Python $py_version для $current_user..."
-        sudo -u "$current_user" bash -c "export PYENV_ROOT=\"$home_dir/.pyenv\" && export PATH=\"\$PYENV_ROOT/bin:\$PATH\" && pyenv install -s $py_version"
-    done
-
-    # Установить глобальную версию
-    sudo -u "$current_user" bash -c "export PYENV_ROOT=\"$home_dir/.pyenv\" && export PATH=\"\$PYENV_ROOT/bin:\$PATH\" && pyenv global ${PYTHON_VERSIONS[0]}"
-
     # Установить nvm
-    log_info "Установка nvm для $current_user..."
-    sudo -u "$current_user" bash -c "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash"
+    if [ ! -d "$home_dir/.nvm" ]; then
+        log_info "Установка nvm для $current_user..."
+        sudo -u "$current_user" bash -c "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash"
 
-    # Установить Node.js версии
-    for node_version in "${NODE_VERSIONS[@]}"; do
-        log_info "Установка Node.js $node_version для $current_user..."
-        sudo -u "$current_user" bash -c "export NVM_DIR=\"$home_dir/.nvm\" && [ -s \"\$NVM_DIR/nvm.sh\" ] && . \"\$NVM_DIR/nvm.sh\" && nvm install $node_version"
-    done
+        # Установить Node.js версии
+        for node_version in "${NODE_VERSIONS[@]}"; do
+            log_info "Установка Node.js $node_version для $current_user..."
+            sudo -u "$current_user" bash -c "export NVM_DIR=\"$home_dir/.nvm\" && [ -s \"\$NVM_DIR/nvm.sh\" ] && . \"\$NVM_DIR/nvm.sh\" && nvm install $node_version"
+        done
 
-    # Установить дефолтную версию
-    sudo -u "$current_user" bash -c "export NVM_DIR=\"$home_dir/.nvm\" && [ -s \"\$NVM_DIR/nvm.sh\" ] && . \"\$NVM_DIR/nvm.sh\" && nvm alias default ${NODE_VERSIONS[0]}"
+        # Установить дефолтную версию
+        sudo -u "$current_user" bash -c "export NVM_DIR=\"$home_dir/.nvm\" && [ -s \"\$NVM_DIR/nvm.sh\" ] && . \"\$NVM_DIR/nvm.sh\" && nvm alias default ${NODE_VERSIONS[0]}"
+
+        log_success "nvm установлен для $current_user"
+    else
+        log_warning "nvm уже установлен для $current_user"
+    fi
 
     # Настроить git delta (если установлен)
     if command -v delta &> /dev/null; then
